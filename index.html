@@ -1,139 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Chat</title>
+<title>Chat Test</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
+body{
     margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial,sans-serif;
-}
-
-html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
     background:#111;
-}
-
-/* Join screen */
-#nameScreen{
-    position:fixed;
-    inset:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#111;
-}
-
-.nameBox{
-    width:90%;
-    max-width:350px;
-    background:#222;
-    padding:25px;
-    border-radius:18px;
-    text-align:center;
-}
-
-.nameBox h2{
     color:white;
-    margin-bottom:20px;
+    font-family:Arial;
 }
 
-.nameBox input{
-    width:100%;
-    padding:14px;
-    border:none;
-    outline:none;
-    border-radius:12px;
+#status{
+    padding:15px;
     background:#333;
-    color:white;
-    font-size:16px;
-}
-
-.nameBox button{
-    width:100%;
-    margin-top:15px;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:#25D366;
-    color:white;
-    font-size:17px;
-}
-
-
-/* Chat */
-.chat{
-    display:none;
-    position:fixed;
-    inset:0;
-    flex-direction:column;
-    background:#111;
-}
-
-.header{
-    height:60px;
-    background:#202020;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:20px;
+    text-align:center;
     font-weight:bold;
 }
 
-.messages{
-    flex:1;
-    overflow-y:auto;
+#messages{
+    height:70vh;
+    overflow:auto;
     padding:15px;
 }
 
 .msg{
     background:#25D366;
-    color:white;
-    padding:10px 14px;
-    border-radius:15px;
-    margin-bottom:10px;
-    max-width:80%;
-    word-break:break-word;
-}
-
-.name{
-    font-size:13px;
-    font-weight:bold;
-    margin-bottom:5px;
+    padding:10px;
+    margin:10px;
+    border-radius:10px;
 }
 
 .bottom{
     display:flex;
-    gap:10px;
     padding:10px;
+    position:fixed;
+    bottom:0;
+    width:100%;
     background:#222;
 }
 
-textarea{
+input{
     flex:1;
-    min-height:46px;
-    max-height:120px;
-    resize:none;
-    border:none;
-    outline:none;
-    border-radius:25px;
-    padding:12px 15px;
-    background:#333;
-    color:white;
+    padding:12px;
     font-size:16px;
 }
 
-.send{
-    width:48px;
-    height:48px;
+button{
+    padding:12px;
+    background:#25D366;
     border:none;
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="status">
+Connecting...
+</div>
+
+
+<div id="messages"></div>
+
+
+<div class="bottom">
+<input id="text" placeholder="Message">
+<button onclick="send()">Send</button>
+</div>
+
+
+
+<script>
+
+const status=document.getElementById("status");
+const messages=document.getElementById("messages");
+const text=document.getElementById("text");
+
+
+const ws=new WebSocket(
+"wss://msg-39zm.onrender.com"
+);
+
+
+
+ws.onopen=function(){
+
+    status.innerHTML="🟢 Connected";
+
+};
+
+
+
+ws.onerror=function(){
+
+    status.innerHTML="🔴 WebSocket Error";
+
+};
+
+
+
+ws.onclose=function(){
+
+    status.innerHTML="🟠 Disconnected";
+
+};
+
+
+
+ws.onmessage=function(event){
+
+    status.innerHTML="🟢 Message received";
+
+    let div=document.createElement("div");
+
+    div.className="msg";
+
+    div.innerHTML=event.data;
+
+    messages.appendChild(div);
+
+};
+
+
+
+function send(){
+
+    if(ws.readyState!==WebSocket.OPEN){
+
+        alert("Not connected");
+
+        return;
+    }
+
+
+    let msg=text.value;
+
+
+    ws.send(JSON.stringify({
+
+        type:"message",
+
+        username:"Test",
+
+        message:msg
+
+    }));
+
+
+    text.value="";
+
+}
+
+
+</script>
+
+
+</body>
+</html>    border:none;
     border-radius:50%;
     background:#25D366;
     color:white;
