@@ -12,15 +12,14 @@ wss.on("connection", (ws) => {
 
         let data;
 
-        try{
+        try {
             data = JSON.parse(message);
-        }catch{
+        } catch {
             return;
         }
 
-        // Send the received message to everyone connected
         wss.clients.forEach(client => {
-            if(client.readyState === WebSocket.OPEN){
+            if (client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify(data));
             }
         });
@@ -31,18 +30,4 @@ wss.on("connection", (ws) => {
         console.log("A user disconnected.");
     });
 
-}); = require("ws");
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on("connection", ws => {
-    ws.on("message", message => {
-        wss.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(message.toString());
-            }
-        });
-    });
 });
-
-console.log("Server running on port 8080");
