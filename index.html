@@ -220,7 +220,13 @@ function joinChat() {
 function send(){
 
     const msg = text.value.trim();
+
     if(msg === "") return;
+
+    if(ws.readyState !== WebSocket.OPEN){
+        alert("Not connected!");
+        return;
+    }
 
     ws.send(JSON.stringify({
         type: "message",
@@ -230,8 +236,8 @@ function send(){
 
     text.value = "";
 }
-
 ws.onmessage = function(event){
+    alert(event.data);
 
     const data = JSON.parse(event.data);
 
