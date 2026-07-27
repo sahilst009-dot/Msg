@@ -1,114 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Chat Test</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WS Test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <style>
 body{
-    margin:0;
     background:#111;
     color:white;
     font-family:Arial;
-}
-
-#status{
-    padding:15px;
-    background:#333;
     text-align:center;
-    font-weight:bold;
-}
-
-#messages{
-    height:70vh;
-    overflow:auto;
-    padding:15px;
-}
-
-.msg{
-    background:#25D366;
-    padding:10px;
-    margin:10px;
-    border-radius:10px;
-}
-
-.bottom{
-    display:flex;
-    padding:10px;
-    position:fixed;
-    bottom:0;
-    width:100%;
-    background:#222;
-}
-
-input{
-    flex:1;
-    padding:12px;
-    font-size:16px;
 }
 
 button{
-    padding:12px;
-    background:#25D366;
-    border:none;
+    padding:15px;
+    font-size:18px;
+}
+
+#status{
+    margin:20px;
+    font-size:25px;
 }
 </style>
 
 </head>
 
-
 <body>
 
+<h1>WebSocket Test</h1>
 
-<div id="status">
-Connecting...
-</div>
+<div id="status">Starting...</div>
 
-
-<div id="messages"></div>
-
-
-<div class="bottom">
-<input id="text" placeholder="Message">
-<button onclick="send()">Send</button>
-</div>
-
+<button onclick="connect()">Connect</button>
 
 
 <script>
 
-const status=document.getElementById("status");
-const messages=document.getElementById("messages");
-const text=document.getElementById("text");
+function connect(){
+
+let status=document.getElementById("status");
 
 
-const ws=new WebSocket(
+let ws=new WebSocket(
 "wss://msg-39zm.onrender.com"
 );
 
 
-
 ws.onopen=function(){
-
     status.innerHTML="🟢 Connected";
-
 };
-
 
 
 ws.onerror=function(){
-
-    status.innerHTML="🔴 WebSocket Error";
-
+    status.innerHTML="🔴 Error";
 };
 
 
-
 ws.onclose=function(){
+    status.innerHTML="🟠 Closed";
+};
 
-    status.innerHTML="🟠 Disconnected";
 
+}
+
+
+</script>
+
+</body>
+</html>
 };
 
 
