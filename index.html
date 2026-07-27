@@ -179,17 +179,7 @@ let username = "";
 
 const ws = new WebSocket("wss://msg-39zm.onrender.com");
 
-ws.onopen = () => {
-    alert("Connected");
-};
 
-ws.onerror = () => {
-    alert("WebSocket Error");
-};
-
-ws.onclose = () => {
-    alert("Disconnected");
-};
 const messages = document.getElementById("messages");
 const text = document.getElementById("text");
 
@@ -236,8 +226,6 @@ function send(){
 
     text.value = "";
 }
-ws.onmessage = function(event){
-    alert(event.data);
 
     const data = JSON.parse(event.data);
 
