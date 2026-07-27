@@ -227,6 +227,8 @@ function send(){
     text.value = "";
 }
 
+    ws.onmessage = function(event){
+
     const data = JSON.parse(event.data);
 
     const div = document.createElement("div");
@@ -234,8 +236,19 @@ function send(){
 
     if(data.type === "join"){
         div.style.background = "#444";
-        div.innerHTML = "<div class='name'>System</div>" +
-                        data.username + " joined the chat";
+        div.innerHTML =
+            "<div class='name'>System</div>" +
+            data.username + " joined the chat";
+    }else{
+        div.innerHTML =
+            "<div class='name'>" + data.username + "</div>" +
+            data.message;
+    }
+
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+
+};
     }else{
 
         div.innerHTML =
