@@ -178,16 +178,17 @@ textarea{
 let username = "";
 
 const ws = new WebSocket("wss://msg-39zm.onrender.com");
+
 ws.onopen = () => {
-    console.log("Connected");
+    alert("Connected");
 };
 
-ws.onerror = (e) => {
-    console.log("WebSocket error", e);
+ws.onerror = () => {
+    alert("WebSocket Error");
 };
 
 ws.onclose = () => {
-    console.log("Disconnected");
+    alert("Disconnected");
 };
 const messages = document.getElementById("messages");
 const text = document.getElementById("text");
