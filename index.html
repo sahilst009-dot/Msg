@@ -177,20 +177,35 @@ textarea{
 <script>
 let username = "";
 
-const ws = new WebSocket("wss://sahil-chat.onrender.com");
+const ws = new WebSocket("wss://msg-39zm.onrender.com");
+ws.onopen = () => {
+    console.log("Connected");
+};
 
+ws.onerror = (e) => {
+    console.log("WebSocket error", e);
+};
+
+ws.onclose = () => {
+    console.log("Disconnected");
+};
 const messages = document.getElementById("messages");
 const text = document.getElementById("text");
 
-function joinChat(){
+function joinChat() {
     const input = document.getElementById("nameInput");
 
-    if(input.value.trim() === ""){
+    if (input.value.trim() === "") {
         alert("Enter your name");
         return;
     }
 
     username = input.value.trim();
+
+    if (ws.readyState !== WebSocket.OPEN) {
+        alert("Connecting... Please wait a few seconds and try again.");
+        return;
+    }
 
     document.getElementById("nameScreen").style.display = "none";
     document.getElementById("chat").style.display = "flex";
