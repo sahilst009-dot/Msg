@@ -20,7 +20,7 @@ html,body{
     background:#111;
 }
 
-/* Name Screen */
+/* Join screen */
 #nameScreen{
     position:fixed;
     inset:0;
@@ -40,7 +40,7 @@ html,body{
 }
 
 .nameBox h2{
-    color:#fff;
+    color:white;
     margin-bottom:20px;
 }
 
@@ -51,7 +51,7 @@ html,body{
     outline:none;
     border-radius:12px;
     background:#333;
-    color:#fff;
+    color:white;
     font-size:16px;
 }
 
@@ -62,10 +62,10 @@ html,body{
     border:none;
     border-radius:12px;
     background:#25D366;
-    color:#fff;
+    color:white;
     font-size:17px;
-    cursor:pointer;
 }
+
 
 /* Chat */
 .chat{
@@ -81,8 +81,8 @@ html,body{
     background:#202020;
     color:white;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     font-size:20px;
     font-weight:bold;
 }
@@ -96,7 +96,7 @@ html,body{
 .msg{
     background:#25D366;
     color:white;
-    padding:12px;
+    padding:10px 14px;
     border-radius:15px;
     margin-bottom:10px;
     max-width:80%;
@@ -109,6 +109,238 @@ html,body{
     margin-bottom:5px;
 }
 
+.bottom{
+    display:flex;
+    gap:10px;
+    padding:10px;
+    background:#222;
+}
+
+textarea{
+    flex:1;
+    min-height:46px;
+    max-height:120px;
+    resize:none;
+    border:none;
+    outline:none;
+    border-radius:25px;
+    padding:12px 15px;
+    background:#333;
+    color:white;
+    font-size:16px;
+}
+
+.send{
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:50%;
+    background:#25D366;
+    color:white;
+    font-size:20px;
+}
+</style>
+</head>
+
+
+<body>
+
+<div id="nameScreen">
+    <div class="nameBox">
+        <h2>Join Chat</h2>
+
+        <input id="nameInput" placeholder="Enter your name">
+
+        <button onclick="joinChat()">
+            Join
+        </button>
+    </div>
+</div>
+
+
+<div class="chat" id="chat">
+
+    <div class="header">
+        Chat Room
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+
+    <div class="bottom">
+
+        <textarea id="text" placeholder="Message..."></textarea>
+
+        <button class="send" onclick="send()">
+            ➤
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+let username="";
+
+
+const ws = new WebSocket(
+"wss://msg-39zm.onrender.com"
+);
+
+
+const messages=document.getElementById("messages");
+const text=document.getElementById("text");
+
+
+
+ws.onopen=()=>{
+    console.log("Connected");
+};
+
+
+
+ws.onerror=()=>{
+    alert("WebSocket Error");
+};
+
+
+
+ws.onclose=()=>{
+    console.log("Disconnected");
+};
+
+
+
+
+
+function joinChat(){
+
+    let input=document.getElementById("nameInput");
+
+    if(input.value.trim()==""){
+        alert("Enter your name");
+        return;
+    }
+
+
+    if(ws.readyState!==WebSocket.OPEN){
+        alert("Connecting...");
+        return;
+    }
+
+
+    username=input.value.trim();
+
+
+    document.getElementById("nameScreen").style.display="none";
+
+    document.getElementById("chat").style.display="flex";
+
+
+    ws.send(JSON.stringify({
+
+        type:"join",
+        username:username
+
+    }));
+
+}
+
+
+
+
+
+function send(){
+
+    let msg=text.value.trim();
+
+
+    if(msg=="") return;
+
+
+    ws.send(JSON.stringify({
+
+        type:"message",
+        username:username,
+        message:msg
+
+    }));
+
+
+    text.value="";
+
+}
+
+
+
+
+ws.onmessage=function(event){
+
+
+    let data=JSON.parse(event.data);
+
+
+    let div=document.createElement("div");
+
+    div.className="msg";
+
+
+
+    if(data.type=="join"){
+
+        div.style.background="#444";
+
+        div.innerHTML=
+        "<div class='name'>System</div>"+
+        data.username+" joined the chat";
+
+
+    }else{
+
+
+        div.innerHTML=
+        "<div class='name'>"+
+        data.username+
+        "</div>"+
+        data.message;
+
+    }
+
+
+
+    messages.appendChild(div);
+
+
+    messages.scrollTop=messages.scrollHeight;
+
+
+};
+
+
+
+
+text.addEventListener("keydown",function(e){
+
+    if(e.key==="Enter" && !e.shiftKey){
+
+        e.preventDefault();
+
+        send();
+
+    }
+
+});
+
+
+
+</script>
+
+
+</body>
+</html>
 .bottom{
     display:flex;
     align-items:flex-end;
